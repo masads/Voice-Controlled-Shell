@@ -1,3 +1,3 @@
 print("hello")
-def
-    print("how")
+def hello():
+    print("asad")

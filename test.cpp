@@ -1,14 +1,14 @@
-#include <Python.h>
-#include <string>
 #include <iostream>
+#include <pybind11/embed.h>
 
+namespace py = pybind11;
 using namespace std;
 
-extern "C"
-const char *return_string(char* name){
-    cout<<strlen(name)<<endl;
-    cout<<name<<endl;
-    static string s = "hello ";
-    s += name;
-    return s.c_str();
+int main()
+{
+    cout<<"C++"<<endl;
+    py::scoped_interpreter guard{};
+    py::exce(r"(
+        print("hello")
+    )");
 }

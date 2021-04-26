@@ -14,7 +14,8 @@ def main():
         print("Recongnizing Now...")
 
         try:
-            print("you have said: \n"+ r.recognize_google(audio))
+            person_speech = r.recognize_google(audio)
+            print("you have said: \n"+ person_speech)
 
         except Exception as e:
             print("Error: "+ str(e))    

@@ -5,6 +5,6 @@
 int main()
 {
 	char cmd[100];
-	sprintf(cmd, "/bin/ls ls");
+	gets(cmd);
 	system(cmd);
 }

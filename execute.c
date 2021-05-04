@@ -4,11 +4,7 @@
 
 int main()
 {
-	char *command;
-	
-	//executing ls command
-	strcpy(command, "ls");
-	printf("ls command...\n");
-	system(command);
-	printf("asd");
+	char cmd[100];
+	sprintf(cmd, "/bin/ls ls");
+	system(cmd);
 }

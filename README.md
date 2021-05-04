@@ -12,4 +12,8 @@ need to install these packages :
   
   pip3 install PyAudio
   
+  #To Run
+  sudo python setup.py build
+  
+  sudo python setup.py install
   

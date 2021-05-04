@@ -23,7 +23,7 @@ def main():
         if "current working directory" in person_speech or "where I am standing" in person_speech:
 		rcmd.run_cmd_py("pwd")
 	elif "shutdown" in person_speech:
-		rcmd.run_cmd_py("shutdown -h now")	
+		rcmd.run_cmd_py("sudo shutdown -h now")	
 		
 
 main()

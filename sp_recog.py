@@ -1,9 +1,9 @@
 import speech_recognition as sr
-
+import rcmd
 
 def main():
-    r=sr.Recognizer()
 
+    r=sr.Recognizer()
     with sr.Microphone() as source:
         r.adjust_for_ambient_noise(source)
 
@@ -14,11 +14,13 @@ def main():
         print("Recongnizing Now...")
 
         try:
-            person_speech = r.recognize_google(audio)
+            person_speech = r.recognize_google(audio, language="hi-IN")
             print("you have said: \n"+ person_speech)
 
         except Exception as e:
             print("Error: "+ str(e))    
+        
+	#rcmd.run_cmd_py("ls")	
 
-
-main()            
+main()
+           

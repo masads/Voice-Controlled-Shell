@@ -4,7 +4,12 @@
 
 need to install these packages :
 
-  pip install SpeechRecognition
+  sudo apt-get install python3 python3-pip 
   
-  pip install PyAudio
+  pip3 install SpeechRecognition
+  
+  sudo apt install python3-pyaudio
+  
+  pip3 install PyAudio
+  
   

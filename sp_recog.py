@@ -22,6 +22,8 @@ def main():
             print("Error: "+ str(e))    
         if "current working directory" in person_speech or "where I am standing" in person_speech:
 		rcmd.run_cmd_py("pwd")
+	elif "shutdown" in text:
+		rcmd.run_cmd_py("shutdown -h now")	
 		
 
 main()

@@ -1,8 +1,6 @@
 # Voice-Controlled-Shell
 # still on working
-# sp_recog.py is just for speech to text other have errors
-
-need to install these packages :
+# Need to install these packages :
 
   sudo apt-get install python3 python3-pip 
   
@@ -12,8 +10,9 @@ need to install these packages :
   
   pip3 install PyAudio
   
-# To Run
-  sudo python setup.py build
+# To build
+  sudo python3 setup.py build 
   
-  sudo python setup.py install
+  sudo python3 setup.py install
+  
   

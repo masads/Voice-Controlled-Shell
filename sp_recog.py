@@ -1,8 +1,7 @@
 import speech_recognition as sr
 import rcmd
-
-def main():
-	
+rcmd.run_cmd_py("pwd")
+while(1):
     r=sr.Recognizer()
     with sr.Microphone() as source:
         r.adjust_for_ambient_noise(source)
@@ -20,11 +19,11 @@ def main():
 
         except Exception as e:
             print("Error: "+ str(e))    
-        if "current working directory" in person_speech or "where I am standing" in person_speech:
-		rcmd.run_cmd_py("pwd")
-	elif "shutdown" in person_speech:
-		rcmd.run_cmd_py("sudo shutdown -h now")	
-		
+        if "where I am standing" in person_speech:
+        	rcmd.run_cmd_py("pwd")
+        elif "shutdown" in person_speech:
+        	rcmd.run_cmd_py("sudo shutdown")
+        elif "exit" in person_speech:
+        	exit()
 
-main()
            

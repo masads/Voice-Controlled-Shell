@@ -1,6 +1,6 @@
 import speech_recognition as sr
 import rcmd
-rcmd.run_cmd_py("pwd")
+
 while(1):
     r=sr.Recognizer()
     with sr.Microphone() as source:

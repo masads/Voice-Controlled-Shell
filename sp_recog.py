@@ -1,29 +1,50 @@
 import speech_recognition as sr
 import rcmd
+import pyttsx3
 
-while(1):
-    r=sr.Recognizer()
-    with sr.Microphone() as source:
-        r.adjust_for_ambient_noise(source)
-        person_speech = ""
+engine = pyttsx3.init()
 
-        print("Say Something..")
+def listen():
+	
+	r=sr.Recognizer()
+	with sr.Microphone() as source:
+		r.adjust_for_ambient_noise(source)
+		person_speech = ""
 
-        audio=r.listen(source)
+		print("Say Something..")
 
-        print("Recongnizing Now...")
+		audio=r.listen(source)
+		print("Recongnizing Now...")
 
-        try:
-            person_speech = r.recognize(audio)
-            print("Speech was:" + person_speech)
+		try:
+			person_speech = r.recognize(audio)
+			print("Speech was:" + person_speech)
+		except Exception as e:
+			print("Error: "+ str(e))    
 
-        except Exception as e:
-            print("Error: "+ str(e))    
-        if "where I am standing" in person_speech:
-        	rcmd.run_cmd_py("pwd")
-        elif "shutdown" in person_speech:
-        	rcmd.run_cmd_py("sudo shutdown")
-        elif "exit" in person_speech:
-        	exit()
+		return person_speech
+
+        
+def speak(speech):
+    
+    engine.say(speech)
+    engine.runAndWait()
+        
+
+
+if __name__ == '__main__':
+	speak("hello how can i help you?")
+	while(1):
+		person_speech = listen()
+		if "where I am standing" in person_speech:
+			rcmd.run_cmd_py("pwd")
+		elif "shutdown" in person_speech:
+			speak("do u want me to shutdown")
+			person_speech = listen()
+			if "yes" in person_speech:
+				rcmd.run_cmd_py("shutdown -h now ")
+		elif "exit" in person_speech:
+			exit()
+
 
            

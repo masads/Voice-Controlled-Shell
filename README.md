@@ -10,6 +10,8 @@
   
   pip3 install PyAudio
   
+  pip3 install pyttsx3
+  
 # To build
   sudo python3 setup.py build 
   

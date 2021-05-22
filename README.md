@@ -12,9 +12,12 @@
   
   pip3 install pyttsx3
   
-# To build
-  sudo python3 setup.py build 
+  sudo apt install libespeak1
   
-  sudo python3 setup.py install
+# To build
+  cc -fPIC -shared -o functions.so functions.c
+# To Run
+  python3 main.py
+
   
   

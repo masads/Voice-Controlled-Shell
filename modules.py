@@ -99,7 +99,34 @@ def proccess_text(path, text,engine):
 		string0 = "shutdown -h now"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
-		my_functions.run_command(b_string1)	
+		my_functions.run_command(b_string1)
+	elif "change to home directory"in text:
+		path = "/"
+	elif "change to root directory"in text:
+		path = "~"
+	elif "what is the date today"in text:
+		string0 = "date"
+		b_string1 = string0.encode('utf-8')
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "what is the day today"in text:
+		string0 = "date +%A"
+		b_string1 = string0.encode('utf-8')
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "what time is it"in text:
+		string0 = "date +%T"
+		b_string1 = string0.encode('utf-8')
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "show calendar"in text:
+		string0 = "cal"
+		b_string1 = string0.encode('utf-8')
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "exit" in text:
+		exit()
+	
 	return path	
 
         

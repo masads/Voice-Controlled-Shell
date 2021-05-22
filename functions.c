@@ -4,7 +4,7 @@
 #include <string.h>
 #include <sys/stat.h>
 void run_command(char* command)
-{	printf("%s \n",command);
+{	
     system(command);
 
 }

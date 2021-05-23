@@ -48,11 +48,10 @@ def proccess_text(path, text,engine):
 			print("folder not exist")
 		else:
 			path=path+"/"+string2
-		print(path)
+		print("now path is :"+path)
 	elif "list file" in text:
 		command = ";ls"
 		string1 = "cd " + path + command
-		print(string1)
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
@@ -72,7 +71,24 @@ def proccess_text(path, text,engine):
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
 		else:
-			print(fileNexist + " file alread exist")
+			print(fileNexist + " file already exist")
+	elif "delete a file" in text: #not completed yet	
+		speak("Tell the file name",engine)
+		string0 = input()
+		speak("Tell the file extension",engine)
+		ext = input()
+		string0 = string0 + "." + ext
+		b_string0 = string0.encode('utf-8')
+		b_path = path.encode('utf-8')
+		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
+		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
+		if " " in fileNexist:
+			print(string0 + " file not exist")
+		else:
+			string1 = "cd " + path + ";rm -r " + fileNexist
+			b_string1 = string1.encode('utf-8')
+			my_functions.run_command.argtypes = [ctypes.c_char_p]
+			my_functions.run_command(b_string1)
 	elif "open nano editor" in text:
 		speak("Tell the file name",engine)
 		string0 = input()
@@ -100,7 +116,7 @@ def proccess_text(path, text,engine):
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
 		else:
-			print(fileNexist + " folder alread exist")
+			print(fileNexist + " folder already exist")
 	elif "list users" in text:
         	string0 = "ls /home"
         	b_string1 = string0.encode('utf-8')
@@ -142,13 +158,116 @@ def proccess_text(path, text,engine):
 		my_functions.run_command(b_string1)
 	elif "add user" in text:
 		speak("Tell the user name",engine)
-		
+		string0 = input()
+		tpath = "/home"
+		b_string0 = string0.encode('utf-8')
+		b_path = tpath.encode('utf-8')
+		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
+		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
+		if " " in fileNexist:
+			string1 = "sudo adduser " + string0
+			b_string1 = string1.encode('utf-8')
+			my_functions.run_command.argtypes = [ctypes.c_char_p]
+			my_functions.run_command(b_string1)
+			print("user added")
+		else:
+			print(fileNexist + " user already exist")
+	elif "delete user" in text:
+		speak("Tell the user name",engine)
+		string0 = input()
+		tpath = "/home"
+		b_string0 = string0.encode('utf-8')
+		b_path = tpath.encode('utf-8')
+		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
+		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
+		if " " in fileNexist:
+			print(string0 + " user not exist")
+		else:
+			string1 = "sudo userdel " + fileNexist
+			b_string1 = string1.encode('utf-8')
+			my_functions.run_command.argtypes = [ctypes.c_char_p]
+			my_functions.run_command(b_string1)
+			print("user removed")
+	elif "permanently delete user" in text:
+		speak("Tell the user name",engine)
+		string0 = input()
+		tpath = "/home"
+		b_string0 = string0.encode('utf-8')
+		b_path = tpath.encode('utf-8')
+		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
+		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
+		if " " in fileNexist:
+			print(string0 + " user not exist")
+		else:
+			string1 = "sudo userdel -r " + fileNexist
+			b_string1 = string1.encode('utf-8')
+			my_functions.run_command.argtypes = [ctypes.c_char_p]
+			my_functions.run_command(b_string1)
+			print("user removed")
+	elif "List file permissions" in text:
+		command = ";ls -l"
+		string1 = "cd " + path + command
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "List all hidden files" in text:
+		command = ";ls -a"
+		string1 = "cd " + path + command
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "current working directory" in text:
+		command = ";pwd"
+		string1 = "cd " + path + command
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "show network status" in text:
+		string1 = "sudo lshw -class network"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "take snapshot" in text:
+		string1 = "gnome-screenshot"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "Show all active connections" in text:
+		string1 = "netstat"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "history of commands" in text:#error
+		string1 = "history"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "clear the screen" in text:
+		string1 = "clear"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "to gain root access " in text:
+		string1 = "sudo su"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "change user password " in text:
+		string1 = "sudo passwd"
+		b_string1 = string1.encode('utf-8')
+		my_functions.run_command.argtypes = [ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "reboot" in text:
+		string0 = "sudo reboot"
+		b_string1 = string0.encode('utf-8')
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
 	elif "exit" in text:
 		exit()
 	
 	return path	
 
-        
+       
 
         
 

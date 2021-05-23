@@ -33,10 +33,6 @@ char * checkFile(char* filename,char *path)
 	return result;
 }
 
-void adduser(char * command,char * name)
-{
-	
-}
 
 
 

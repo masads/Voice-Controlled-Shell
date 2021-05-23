@@ -56,17 +56,23 @@ def proccess_text(path, text,engine):
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "create a file" in text: #not completed yet
+	elif "create a file" in text: #not completed yet	
 		speak("Tell the file name",engine)
 		string0 = input()
 		speak("Tell the file extension",engine)
-		string1 = string0  + ".txt"
-		string2 = "cd " + path + ";touch " + string1
-		b_string1 = string1.encode('utf-8')
+		ext = input()
+		string0 = string0 + "." + ext
+		b_string0 = string0.encode('utf-8')
 		b_path = path.encode('utf-8')
-		b_command = string2.encode('utf-8')
-		my_functions.crtFileOrDirec.argtypes = [ctypes.c_char_p,ctypes.c_char_p,ctypes.c_char_p]
-		my_functions.crtFileOrDirec(b_string1,b_path,b_command)
+		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
+		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
+		if " " in fileNexist:
+			string1 = "cd " + path + ";touch " + string0
+			b_string1 = string1.encode('utf-8')
+			my_functions.run_command.argtypes = [ctypes.c_char_p]
+			my_functions.run_command(b_string1)
+		else:
+			print(fileNexist + " file alread exist")
 	elif "open nano editor" in text:
 		speak("Tell the file name",engine)
 		string0 = input()
@@ -84,12 +90,17 @@ def proccess_text(path, text,engine):
 	elif "make directory" in text: #not completed yet
 		speak("Tell the file name",engine)
 		string0 = input()
-		string1 = "cd " + path + ";mkdir " + string0
-		b_string1 = string0.encode('utf-8')
+		b_string0 = string0.encode('utf-8')
 		b_path = path.encode('utf-8')
-		b_command = string1.encode('utf-8')
-		my_functions.crtFileOrDirec.argtypes = [ctypes.c_char_p,ctypes.c_char_p,ctypes.c_char_p]
-		my_functions.crtFileOrDirec(b_string1,b_path,b_command)
+		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
+		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
+		if " " in fileNexist:
+			string1 = "cd " + path + ";mkdir " + string0
+			b_string1 = string1.encode('utf-8')
+			my_functions.run_command.argtypes = [ctypes.c_char_p]
+			my_functions.run_command(b_string1)
+		else:
+			print(fileNexist + " folder alread exist")
 	elif "list users" in text:
         	string0 = "ls /home"
         	b_string1 = string0.encode('utf-8')
@@ -124,6 +135,14 @@ def proccess_text(path, text,engine):
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+	elif "who am i"in text:
+		string0 = "whoami"
+		b_string1 = string0.encode('utf-8')
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+	elif "add user" in text:
+		speak("Tell the user name",engine)
+		
 	elif "exit" in text:
 		exit()
 	

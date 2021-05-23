@@ -6,11 +6,11 @@
 void run_command(char* command)
 {	
     system(command);
-
 }
 
 char * checkFile(char* filename,char *path)
 {
+	
 	struct dirent *de; 
 	DIR *dr = opendir(path);
 	if (dr == NULL) 
@@ -32,25 +32,10 @@ char * checkFile(char* filename,char *path)
     	strcpy(result,string);
 	return result;
 }
-void crtFileOrDirec(char * filename,char * path, char * command)
+
+void adduser(char * command,char * name)
 {
-    char *filename1 = (char *)malloc(strlen(filename)+1);
-    filename1=checkFile(filename,path);
-    struct stat buffer;
-    int exist = stat(filename1,&buffer);
-    if (exist == 0){
-
-         printf("%s already exsists \n",filename1);
-        return ;
-    }else
-    {
-    	run_command(command);
-    	printf("file created successfully");
-    	return ;
-    }
-
-    printf("Error in making file or directory\n");
-
+	
 }
 
 

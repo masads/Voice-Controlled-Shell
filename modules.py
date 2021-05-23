@@ -55,7 +55,7 @@ def proccess_text(path, text,engine):
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "create a file" in text: #not completed yet	
+	elif "create a file" in text: 
 		speak("Tell the file name",engine)
 		string0 = input()
 		speak("Tell the file extension",engine)
@@ -70,9 +70,10 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
+			print(string0 + " file created")
 		else:
 			print(fileNexist + " file already exist")
-	elif "delete a file" in text: #not completed yet	
+	elif "delete a file" in text: 	
 		speak("Tell the file name",engine)
 		string0 = input()
 		speak("Tell the file extension",engine)
@@ -89,6 +90,7 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
+			print(fileNexist + " file removed")
 	elif "open nano editor" in text:
 		speak("Tell the file name",engine)
 		string0 = input()
@@ -103,7 +105,7 @@ def proccess_text(path, text,engine):
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "make directory" in text: #not completed yet
+	elif "make directory" in text: 
 		speak("Tell the file name",engine)
 		string0 = input()
 		b_string0 = string0.encode('utf-8')
@@ -238,7 +240,7 @@ def proccess_text(path, text,engine):
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
 	elif "history of commands" in text:#error
-		string1 = "history"
+		string1 = "cat ~/.bash_history"
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
@@ -247,12 +249,12 @@ def proccess_text(path, text,engine):
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "to gain root access " in text:
+	elif "to gain root access" in text:
 		string1 = "sudo su"
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "change user password " in text:
+	elif "change user password" in text:
 		string1 = "sudo passwd"
 		b_string1 = string1.encode('utf-8')
 		my_functions.run_command.argtypes = [ctypes.c_char_p]

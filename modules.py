@@ -3,13 +3,17 @@ import ctypes
 
 ## Build Command - cc -fPIC -shared -o functions.so functions.c ##
 
-so_file = "/home/masads/os/functions.so"
+so_file = "/home/masads/Voice-Controlled-Shell/functions.so"
 my_functions = ctypes.CDLL(so_file)
 
 my_functions.checkFile.restype  = ctypes.c_char_p
 
-
-def listen():
+def speak(speech, engine):
+    
+    engine.say(speech)
+    engine.runAndWait()
+    
+def listen(engine):
 	
 	r=sr.Recognizer()
 	with sr.Microphone() as source:
@@ -18,47 +22,50 @@ def listen():
 
 		print("Say Something..")
         
-
 		audio=r.listen(source)
 		print("Recongnizing Now...")
 
 		try:
 			person_speech = r.recognize_google(audio)
-			print("Speech was:" + person_speech)
+			print("You: " + person_speech)
 		except Exception as e:
-			print("Error: "+ str(e))    
-
+			print("Bot: I did not understand what you said")  
+			speak(" I did not understand what you said",engine)  
+			listen(engine)
+			
 		return person_speech
 
-def speak(speech, engine):
-    
-    engine.say(speech)
-    engine.runAndWait()
+
     
 def proccess_text(path, text,engine):
 	
 	if "change directory" in text:
 		speak("Which directory you want to go to?",engine)
-		string1 = input()
+		string1 = listen(engine)
 		b_string1 = string1.encode('utf-8')
 		b_path = path.encode('utf-8')
 		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
 		string2 = my_functions.checkFile(b_string1,b_path).decode()
 		if " " in string2:
-			print("folder not exist")
+			print("Folder does not exists")
 		else:
 			path=path+"/"+string2
-		print("now path is :"+path)
+		print("Current path is :"+path)
+		
+
 	elif "list file" in text:
 		command = ";ls"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
+		print("Listing all the files in the current directory...")
+		speak("Listing all the files in the current directory", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "create a file" in text: 
+
+	elif "create a new file" in text: 
 		speak("Tell the file name",engine)
-		string0 = input()
-		speak("Tell the file extension",engine)
+		string0 = listen(engine)
+		speak("Please enter the file extension",engine)
 		ext = input()
 		string0 = string0 + "." + ext
 		b_string0 = string0.encode('utf-8')
@@ -70,12 +77,14 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
-			print(string0 + " file created")
+			print(string0 + " File Created Successfully...")
+			speak(string0 + " File Created Successfully", engine)
 		else:
-			print(fileNexist + " file already exist")
+			print(fileNexist + " File already exists")
+
 	elif "delete a file" in text: 	
 		speak("Tell the file name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		speak("Tell the file extension",engine)
 		ext = input()
 		string0 = string0 + "." + ext
@@ -90,24 +99,32 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
-			print(fileNexist + " file removed")
+			print(fileNexist + " File Removed Successfully")
+			speak("File Removed Successfully",engine)
+
 	elif "open nano editor" in text:
 		speak("Tell the file name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		string1 = "cd " + path + ";nano " + string0 + ".*"
 		b_string1 = string1.encode('utf-8')
+		print("Opening geditor...")
+		speak("Opening geditor",engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "open geditor" in text:
 		speak("Tell the file name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		string1 = "cd " + path + ";gedit " + string0 + ".*"
 		b_string1 = string1.encode('utf-8')
+		print("Opening geditor...")
+		speak("Opening geditor",engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "make directory" in text: 
 		speak("Tell the file name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		b_string0 = string0.encode('utf-8')
 		b_path = path.encode('utf-8')
 		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
@@ -117,50 +134,69 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
+			print("New Directory Created Successfully...")
+			speak("New Directory Created Successfully",engine)
 		else:
-			print(fileNexist + " folder already exist")
+			print(fileNexist + " Folder already exists")
+
 	elif "list users" in text:
-        	string0 = "ls /home"
-        	b_string1 = string0.encode('utf-8')
-        	my_functions.run_command.argtypes=[ctypes.c_char_p]
-        	my_functions.run_command(b_string1)
+		string0 = "ls /home"
+		b_string1 = string0.encode('utf-8')
+		print("Listing all the users...")
+		speak("Listing all the users",engine)
+		my_functions.run_command.argtypes=[ctypes.c_char_p]
+		my_functions.run_command(b_string1)
+
 	elif "shutdown" in text:
 		string0 = "shutdown -h now"
 		b_string1 = string0.encode('utf-8')
+		speak("Shutting down the PC",engine)
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "change to home directory"in text:
+
+	elif "navigate to home directory"in text:
 		path = "/"
-	elif "change to root directory"in text:
+		speak("Navigated to Home Directory",engine)
+
+	elif "navigate to root directory"in text:
 		path = "~"
+		speak("Navigated to Root Directory",engine)
+
 	elif "what is the date today"in text:
 		string0 = "date"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "what is the day today"in text:
 		string0 = "date +%A"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "what time is it"in text:
 		string0 = "date +%T"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "show calendar"in text:
+		print("Showing you the calender for the current month...")
+		speak("Showing you the calender for the current month",engine)
 		string0 = "cal"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "who am i"in text:
 		string0 = "whoami"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "add user" in text:
 		speak("Tell the user name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		tpath = "/home"
 		b_string0 = string0.encode('utf-8')
 		b_path = tpath.encode('utf-8')
@@ -171,28 +207,32 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
-			print("user added")
+			print("User Added Successfully...")
+			speak("New User Added Successfully", engine)
 		else:
-			print(fileNexist + " user already exist")
+			print(fileNexist + " User already exist")
+
 	elif "delete user" in text:
 		speak("Tell the user name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		tpath = "/home"
 		b_string0 = string0.encode('utf-8')
 		b_path = tpath.encode('utf-8')
 		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
 		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
 		if " " in fileNexist:
-			print(string0 + " user not exist")
+			print(string0 + " User does not exists")
 		else:
 			string1 = "sudo userdel " + fileNexist
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
-			print("user removed")
+			print("User Removed Successfully...")
+			speak("Successfully removed the User",engine)
+
 	elif "permanently delete user" in text:
 		speak("Tell the user name",engine)
-		string0 = input()
+		string0 = listen(engine)
 		tpath = "/home"
 		b_string0 = string0.encode('utf-8')
 		b_path = tpath.encode('utf-8')
@@ -205,68 +245,107 @@ def proccess_text(path, text,engine):
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
-			print("user removed")
-	elif "List file permissions" in text:
+			print("User Removed Successfully...")
+			speak("Successfully removed the User",engine)
+
+	elif "list file permission" in text:
 		command = ";ls -l"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
+		print("Listing all the the files with their permissions...")
+		speak("Listing all the the files with their permissions", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "List all hidden files" in text:
+
+	elif "list all hidden files" in text:
 		command = ";ls -a"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
+		print("Listing all the hidden files...")
+		speak("Listing all the hidden files", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "current working directory" in text:
 		command = ";pwd"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
+		print("Your current working directory is: " + path)
+		speak("Your current working directory is " + path, engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "show network status" in text:
 		string1 = "sudo lshw -class network"
 		b_string1 = string1.encode('utf-8')
+		print("Showing you the current network status...")
+		speak("Showing you the current network status", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "take snapshot" in text:
 		string1 = "gnome-screenshot"
 		b_string1 = string1.encode('utf-8')
+		print("Taking a snapshot rightnow...")
+		speak("Taking a snapshot rightnow", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "Show all active connections" in text:
+
+	elif "show all active connection" in text:
 		string1 = "netstat"
 		b_string1 = string1.encode('utf-8')
+		print("Showing you all the active connections...")
+		speak("Showing you all the active connections", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "history of commands" in text:#error
+
+	elif "history of command" in text:#error
 		string1 = "cat ~/.bash_history"
 		b_string1 = string1.encode('utf-8')
+		print("Showing you all the commands that were executed previously...")
+		speak("Showing you all the commands that were executed previously", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "clear the screen" in text:
 		string1 = "clear"
 		b_string1 = string1.encode('utf-8')
+		print("Clearing the console...")
+		speak("Clearing the console", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
-	elif "to gain root access" in text:
+
+	elif "gain root access" in text:
 		string1 = "sudo su"
 		b_string1 = string1.encode('utf-8')
+		print("giving you the root access...")
+		speak("giving you the root access", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "change user password" in text:
 		string1 = "sudo passwd"
 		b_string1 = string1.encode('utf-8')
+		print("Changing the password...")
+		speak("Changing the password", engine)
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "reboot" in text:
 		string0 = "sudo reboot"
 		b_string1 = string0.encode('utf-8')
+		print("Rebooting the system...")
+		speak("Rebooting the system", engine)
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
+
 	elif "exit" in text:
+		print("Exiting the Program...")
+		speak("Exiting the Program",engine)
 		exit()
-	
+	else:
+		print("command not found")
+		speak("command not found",engine)
 	return path	
 
        

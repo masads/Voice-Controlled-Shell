@@ -1,6 +1,6 @@
 import speech_recognition as sr
 import ctypes
-
+import time
 ## Build Command - cc -fPIC -shared -o functions.so functions.c ##
 
 so_file = "/home/masads/Voice-Controlled-Shell/functions.so"
@@ -8,52 +8,56 @@ my_functions = ctypes.CDLL(so_file)
 
 my_functions.checkFile.restype  = ctypes.c_char_p
 
-def speak(speech, engine):
-    
-    engine.say(speech)
-    engine.runAndWait()
-    
+
 def listen(engine):
 	
 	r=sr.Recognizer()
 	with sr.Microphone() as source:
 		r.adjust_for_ambient_noise(source)
-		person_speech = ""
+		person_speech = "~"
 
-		print("Say Something..")
+		print("\nSay Something..")
         
 		audio=r.listen(source)
+		time.sleep(1)
 		print("Recongnizing Now...")
-
 		try:
 			person_speech = r.recognize_google(audio)
 			print("You: " + person_speech)
 		except Exception as e:
-			print("Bot: I did not understand what you said")  
-			speak(" I did not understand what you said",engine)  
-			listen(engine)
-			
-		return person_speech
+			print("Bot: I did not understand what you said.. say again")
+			speak("I did not understand what you said say again",engine)
+		
+		if "~" in person_speech:
+			return listen(engine)
+		else:
+			return person_speech
 
-
+def speak(speech, engine):
+    
+    engine.say(speech)
+    engine.runAndWait()
     
 def proccess_text(path, text,engine):
-	
+
 	if "change directory" in text:
+		print("Which directory you want to go to?")
 		speak("Which directory you want to go to?",engine)
 		string1 = listen(engine)
+		print(string1)
 		b_string1 = string1.encode('utf-8')
 		b_path = path.encode('utf-8')
 		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
 		string2 = my_functions.checkFile(b_string1,b_path).decode()
+		print(string2)
 		if " " in string2:
 			print("Folder does not exists")
 		else:
 			path=path+"/"+string2
-		print("Current path is :"+path)
+		print("Successfully navigated to :"+path)
 		
 
-	elif "list file" in text:
+	elif "list all file" in text:
 		command = ";ls"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
@@ -112,7 +116,7 @@ def proccess_text(path, text,engine):
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
 
-	elif "open geditor" in text:
+	elif "open g editor" in text:
 		speak("Tell the file name",engine)
 		string0 = listen(engine)
 		string1 = "cd " + path + ";gedit " + string0 + ".*"
@@ -139,7 +143,7 @@ def proccess_text(path, text,engine):
 		else:
 			print(fileNexist + " Folder already exists")
 
-	elif "list users" in text:
+	elif "show all users" in text:
 		string0 = "ls /home"
 		b_string1 = string0.encode('utf-8')
 		print("Listing all the users...")
@@ -155,26 +159,26 @@ def proccess_text(path, text,engine):
 		my_functions.run_command(b_string1)
 
 	elif "navigate to home directory"in text:
-		path = "/"
+		path = "/home/masads"
 		speak("Navigated to Home Directory",engine)
 
 	elif "navigate to root directory"in text:
 		path = "~"
 		speak("Navigated to Root Directory",engine)
 
-	elif "what is the date today"in text:
+	elif "show date"in text:
 		string0 = "date"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
 
-	elif "what is the day today"in text:
+	elif "what day is it"in text:
 		string0 = "date +%A"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
 		my_functions.run_command(b_string1)
 
-	elif "what time is it"in text:
+	elif "show time"in text:
 		string0 = "date +%T"
 		b_string1 = string0.encode('utf-8')
 		my_functions.run_command.argtypes=[ctypes.c_char_p]
@@ -203,7 +207,7 @@ def proccess_text(path, text,engine):
 		my_functions.checkFile.argtypes = [ctypes.c_char_p,ctypes.c_char_p]
 		fileNexist = my_functions.checkFile(b_string0,b_path).decode()
 		if " " in fileNexist:
-			string1 = "sudo adduser " + string0
+			string1 = "sudo adduser " + string0.lower()
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
@@ -212,7 +216,7 @@ def proccess_text(path, text,engine):
 		else:
 			print(fileNexist + " User already exist")
 
-	elif "delete user" in text:
+	elif "delete user profile" in text:
 		speak("Tell the user name",engine)
 		string0 = listen(engine)
 		tpath = "/home"
@@ -241,14 +245,14 @@ def proccess_text(path, text,engine):
 		if " " in fileNexist:
 			print(string0 + " user not exist")
 		else:
-			string1 = "sudo userdel -r " + fileNexist
+			string1 = "sudo deluser --remove-home " + fileNexist
 			b_string1 = string1.encode('utf-8')
 			my_functions.run_command.argtypes = [ctypes.c_char_p]
 			my_functions.run_command(b_string1)
 			print("User Removed Successfully...")
 			speak("Successfully removed the User",engine)
 
-	elif "list file permission" in text:
+	elif "show file permission" in text:
 		command = ";ls -l"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
@@ -257,7 +261,7 @@ def proccess_text(path, text,engine):
 		my_functions.run_command.argtypes = [ctypes.c_char_p]
 		my_functions.run_command(b_string1)
 
-	elif "list all hidden files" in text:
+	elif "list  hidden file" in text:
 		command = ";ls -a"
 		string1 = "cd " + path + command
 		b_string1 = string1.encode('utf-8')
@@ -346,6 +350,7 @@ def proccess_text(path, text,engine):
 	else:
 		print("command not found")
 		speak("command not found",engine)
+	
 	return path	
 
        

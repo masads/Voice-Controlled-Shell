@@ -21,6 +21,7 @@ char * checkFile(char* filename,char *path)
 	char string[256]=" ";
 	while ((de = readdir(dr)) != NULL)
 	{
+			
 			if(strcasecmp(de->d_name,filename)==0)
 			{
 				strcpy(string, de->d_name);
